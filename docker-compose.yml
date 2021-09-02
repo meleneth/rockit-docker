@@ -1,0 +1,22 @@
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+  web:
+    build: .
+    ports:
+      - "80:80"
+    links:
+      - redis
+    environment:
+      - RAILS_MASTER_KEY=5765ff2530f317aabe5d2a016686eed4
+      - REDIS_DB=0
+      - REDIS_URL=redis://:@redis:6379/0
+      - REDIS_PORT=6379
